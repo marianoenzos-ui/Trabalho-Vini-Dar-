@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor Escolar Pro - Identidade Institucional</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* NOVA PALETA DE CORES BASEADA NA LOGO */
+            --primary: #D01D21; /* Vermelho exato da logo UNISAGRADO */
+            --danger: #D01D21;  /* Usando o mesmo vermelho para eventos */
+            --bg: #f4f7f6;
+            --text: #333;
+            --white: #ffffff;
+            --gray-light: #eee;
+            --gray-med: #ddd;
+            --gray-text: #666;
+            --btn-hover: #aa171a; /* Vermelho ligeiramente mais escuro para hover */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- ESTILIZAÇÃO DO CABEÇALHO COM LOGO --- */
+        header {
+            background-color: var(--white);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-bottom: 4px solid var(--primary); /* Linha sutil da cor primária */
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            max-height: 50px; /* Ajuste conforme necessário */
+            width: auto;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary); /* Título na cor primária */
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px 20px; }
+
+        /* Layout em 3 Colunas */
+        main {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 { font-size: 1.2rem; margin-top: 0; color: var(--text); border-bottom: 1px solid var(--gray-light); padding-bottom: 12px; margin-bottom: 20px;}
+
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+        .row-horas { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        label { font-weight: bold; font-size: 0.85rem; color: var(--text); }
+        input, select { padding: 10px; border: 1px solid var(--gray-med); border-radius: 6px; font-family: inherit; font-size: 0.9rem;}
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(208, 29, 33, 0.1); }
+
+        /* --- BOTÃO ESTILIZADO COM COR DA LOGO --- */
+        button.btn-add {
+            padding: 14px;
+            background-color: var(--primary); /* Vermelho UNISAGRADO */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button.btn-add:hover { background-color: var(--btn-hover); }
+        button.btn-add:active { transform: translateY(1px); }
+
+        /* --- ESTILO DA LISTA LATERAL COM INDICADOR VERMELHO --- */
+        .lista-container {
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .item-compromisso {
+            border-left: 4px solid var(--primary); /* Indicador na cor da logo */
+            background: #fff; /* Fundo branco limpo */
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+
+        .item-compromisso:hover { transform: translateX(3px); }
+
+        .item-compromisso strong { display: block; color: var(--primary); margin-bottom: 5px; font-size: 1rem;}
+        .item-compromisso .data { font-weight: bold; color: var(--text); display: block; margin-bottom: 3px;}
+        .item-compromisso .horario { color: var(--gray-text); font-size: 0.85rem;}
+
+        /* --- CUSTOMIZAÇÃO DO CALENDÁRIO COM COR PRIMÁRIA --- */
+        #calendar {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Cor do evento no calendário (Vermelho UNISAGRADO) */
+        .fc-event { 
+            background-color: var(--danger) !important; 
+            border: none !important; 
+            cursor: pointer; 
+            padding: 2px 5px;
+            font-size: 0.85rem;
+        }
+        
+        /* Cor de links e botões ativos do FullCalendar */
+        .fc .fc-button-primary { background-color: var(--primary); border-color: var(--primary); }
+        .fc .fc-button-primary:hover { background-color: var(--btn-hover); border-color: var(--btn-hover); }
+        .fc .fc-button-primary:disabled { background-color: #d8a0a1; border-color: #d8a0a1; }
+        .fc .fc-col-header-cell-cushion, .fc .fc-daygrid-day-number { color: var(--text); font-weight: bold; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: var(--gray-light); }
+
+        @media (max-width: 1100px) {
+            main { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; text-align: center; gap: 15px; }
+            .lista-container { max-height: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="image_0.png" alt="Logo UNISAGRADO" class="logo-img"> </div>
+            <h1>Gestão Escolar Pro</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <section class="card">
+                <h2>Novo Agendamento</h2>
+                <div class="form-group">
+                    <label>Autor</label>
+                    <select id="compAutor">
+                        <option value="Reitoria">Reitoria</option>
+                        <option value="Professor(a)">Professor(a)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" id="compDesc" placeholder="Pauta da reunião">
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="compData">
+                </div>
+                <div class="row-horas">
+                    <div class="form-group">
+                        <label>Início</label>
+                        <input type="time" id="horaInicio">
+                    </div>
+                    <div class="form-group">
+                        <label>Término</label>
+                        <input type="time" id="horaFim">
+                    </div>
+                </div>
+                <button class="btn-add" onclick="adicionarAoCalendario()">Agendar Reunião</button>
+            </section>
+
+            <section>
+                <div id="calendar"></div>
+            </section>
+
+            <section class="card">
+                <h2>Próximas Reuniões</h2>
+                <div id="listaProximos" class="lista-container">
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <script>
+        let calendar;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                events: JSON.parse(localStorage.getItem('agenda_escolar')) || [],
+                eventClick: function(info) {
+                    if (confirm(`Excluir: ${info.event.title}?`)) {
+                        info.event.remove();
+                        atualizarTudo();
+                    }
+                }
+            });
+
+            calendar.render();
+            renderizarListaLateral();
+        });
+
+        function adicionarAoCalendario() {
+            const autor = document.getElementById('compAutor').value;
+            const desc = document.getElementById('compDesc').value;
+            const dataStr = document.getElementById('compData').value;
+            const hInicio = document.getElementById('horaInicio').value;
+            const hFim = document.getElementById('horaFim').value;
+
+            if (!desc || !dataStr || !hInicio || !hFim) return alert("Preencha todos os campos!");
+
+            const inicioISO = `${dataStr}T${hInicio}`;
+            const fimISO = `${dataStr}T${hFim}`;
+
+            if (new Date(inicioISO) >= new Date(fimISO)) return alert("Hora inválida!");
+
+            calendar.addEvent({
+                title: `${autor}: ${desc}`,
+                start: inicioISO,
+                end: fimISO,
+                extendedProps: { autor: autor, descricao: desc }
+            });
+
+            atualizarTudo();
+            
+            // Limpar campos
+            document.getElementById('compDesc').value = '';
+            document.getElementById('horaInicio').value = '';
+            document.getElementById('horaFim').value = '';
+        }
+
+        function atualizarTudo() {
+            const eventos = calendar.getEvents().map(e => ({
+                title: e.title,
+                start: e.startStr,
+                end: e.endStr
+            }));
+            localStorage.setItem('agenda_escolar', JSON.stringify(eventos));
+            renderizarListaLateral();
+        }
+
+        function renderizarListaLateral() {
+            const listaEl = document.getElementById('listaProximos');
+            const eventos = calendar.getEvents();
+
+            // Ordenar por data de início
+            eventos.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+            listaEl.innerHTML = '';
+
+            if (eventos.length === 0) {
+                listaEl.innerHTML = '<p style="color:#999; font-size:0.85rem; text-align: center; margin-top: 20px;">Nenhuma reunião agendada.</p>';
+                return;
+            }
+
+            eventos.forEach(e => {
+                const dataObj = new Date(e.start);
+                const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+                const horaInicio = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const horaFim = new Date(e.end).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+                listaEl.innerHTML += `
+                    <div class="item-compromisso">
+                        <strong>${e.title}</strong>
+                        <span class="data">📅 ${dataFormatada}</span>
+                        <span class="horario">⏰ ${horaInicio} às ${horaFim}</span>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
